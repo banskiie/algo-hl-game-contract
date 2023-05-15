@@ -1,0 +1,82 @@
+#pragma version 5
+txn ApplicationID
+int 0
+==
+bnz main_l16
+txn OnCompletion
+int OptIn
+==
+bnz main_l15
+txn OnCompletion
+int CloseOut
+==
+bnz main_l14
+txn OnCompletion
+int UpdateApplication
+==
+bnz main_l13
+txn OnCompletion
+int DeleteApplication
+==
+bnz main_l12
+txn OnCompletion
+int NoOp
+==
+bnz main_l7
+err
+main_l7:
+global GroupSize
+int 1
+==
+assert
+txna ApplicationArgs 0
+byte "Add_Local"
+==
+bnz main_l11
+txna ApplicationArgs 0
+byte "Reset_Local"
+==
+bnz main_l10
+err
+main_l10:
+txn Sender
+byte "Count"
+app_local_get
+store 0
+txn Sender
+byte "Count"
+int 0
+app_local_put
+int 1
+return
+main_l11:
+txn Sender
+byte "Count"
+app_local_get
+store 0
+txn Sender
+byte "Count"
+load 0
+int 1
++
+app_local_put
+int 1
+return
+main_l12:
+int 0
+return
+main_l13:
+int 0
+return
+main_l14:
+int 0
+return
+main_l15:
+int 1
+return
+main_l16:
+byte "Count"
+int 0
+app_global_put
+int 1
+return
